@@ -18,26 +18,26 @@ installed in your system or build a new one just for a specific project.
    ```
 
 3. Update any rules in your makefile so that rebar3 is required, and then
-   change the rebar3 calls to use `$(REBAR)` instead of `rebar3` or `./rebar3`
+   change the `rebar3` invocations to `$(REBAR)`.
 
    For example, change this:
 
+   ```make
+   compile:
+       rebar3 compile
+   ```
 
-        ```make
-        compile:
-            rebar3 compile
-        ```
-    
     To This:
-        
-        ```make
-        compile: rebar3
-            $(REBAR) compile
-        ```
 
-4. Celebrate!
+    ```
+    compile: rebar3
+        $(REBAR) compile
+    ```
 
-## Update
+4. Celebrate! Now every time you run `make compile`, it will check for the
+   presence of rebar3, and if it's not found, download and compile it first.
+
+## Updating `rebar3.mk`
 
 You can update the version of `rebar3.mk` that's installed in your app by running:
 
