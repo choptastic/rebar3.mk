@@ -29,7 +29,7 @@ installed in your system or build a new one just for a specific project.
 
     To This:
 
-    ```
+    ```make
     compile: rebar3
         $(REBAR) compile
     ```
