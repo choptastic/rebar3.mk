@@ -52,7 +52,8 @@ REBAR_PATH = $(shell which rebar3)
 ifeq ($(REBAR_PATH),)
 REBAR = ./rebar3
 RANDOM_STRING := rebar3_$(shell openssl rand -hex 16)
-rebar3: update_rebar3
+rebar3:
+	make update_rebar3
 else
 REBAR = rebar3
 rebar3:
@@ -60,6 +61,7 @@ endif
 
 update_rebar3_mk:
 	curl -O https://raw.githubusercontent.com/choptastic/rebar3.mk/master/rebar3.mk
+
 update_rebar3:
 	@echo "Fetching and compiling rebar3 ($(REBAR_LATEST_VERSION)) for this local project..."
 	@(cd /tmp && \
