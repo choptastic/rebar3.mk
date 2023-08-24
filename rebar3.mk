@@ -24,23 +24,35 @@
 ##         compile: rebar3
 ##             $(REBAR) compile
 
+
+## TODO Notes:
+## I'd like to update this to take a $MINIMUM_REBAR_VERSION variable
+## to check the current version of rebar3, and if the version is less than
+## the $MINIMUM_REBAR_VERSION, then download/compile the latest version
+
+## Similarly, I'd like to add a $(FORCE_REBAR_VERSION) variable which *forces*
+## the project to use that specific verion. This would work similarly by
+## comparing versions, and if the version is different, download/compile that
+## specific version locally.
+
+## Finally, the logic here should be changed slightly to check for a local (in
+## this project) version of rebar3 and use that first. If that doesn't exist,
+## then fall back to checking the path, and finally, if that still doesn't
+## exist, then (and only then) downloading and compiling rebar3.
+
+## A more advanced version of this checker would also verify that rebar3
+## actually runs and doesn't just throw an error.
+
 REBAR_MK_VERSION=0.1.0
+REBAR_LATEST_VERSION=$(shell curl -s https://api.github.com/repos/erlang/rebar3/releases/latest | jq -r ".tag_name")
+#REBAR_VERSION=
 
 REBAR_PATH = $(shell which rebar3)
 
 ifeq ($(REBAR_PATH),)
 REBAR = ./rebar3
 RANDOM_STRING := rebar3_$(shell openssl rand -hex 16)
-rebar3:
-	@echo "Fetching and compiling rebar3 for this local project..."
-	@(cd /tmp && \
-	git clone https://github.com/erlang/rebar3 $(RANDOM_STRING) && \
-	cd $(RANDOM_STRING) && \
-	./bootstrap)
-	@echo "Installing rebar3 into your project's directory..."
-	@(mv /tmp/$(RANDOM_STRING)/rebar3 .)
-	@echo "Cleaning up..."
-	@(rm -fr /tmp/$(RANDOM_STRING))
+rebar3: update_rebar3
 else
 REBAR = rebar3
 rebar3:
@@ -48,3 +60,15 @@ endif
 
 update_rebar3_mk:
 	curl -O https://raw.githubusercontent.com/choptastic/rebar3.mk/master/rebar3.mk
+update_rebar3:
+	@echo "Fetching and compiling rebar3 ($(REBAR_LATEST_VERSION)) for this local project..."
+	@(cd /tmp && \
+	git clone https://github.com/erlang/rebar3 $(RANDOM_STRING) && \
+	cd $(RANDOM_STRING) && \
+	git fetch --tags && \
+	git checkout $(REBAR_LATEST_VERSION) && \
+	./bootstrap)
+	@echo "Installing rebar3 into your project's directory..."
+	@(mv /tmp/$(RANDOM_STRING)/rebar3 .)
+	@echo "Cleaning up..."
+	@(rm -fr /tmp/$(RANDOM_STRING))
