@@ -6,7 +6,7 @@ project.
 
 ## How to use:
 
-1. At the top of your `Makefile` add this:
+1. At the top of your `Makefile` add this (under your first rule):
 
    ```make
    # Check if rebar3.mk exists, and if not, download it
@@ -58,6 +58,8 @@ make update_rebar3_mk
 * You *may* add `rebar3.mk` to your repository, but it's likely unnecessary,
   but obviously if you end up updating your `rebar3.mk` file, it will end up
   needing to be updated here as well.
+
+## What if I need 
 
 ## Author
 
