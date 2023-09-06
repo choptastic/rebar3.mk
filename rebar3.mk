@@ -1,5 +1,5 @@
 ## rebar3.mk
-## Version 0.1.0
+## Version 0.1.1
 ## Copyright 2023 Jesse Gumm
 ## MIT License
 ##
@@ -43,8 +43,9 @@
 ## A more advanced version of this checker would also verify that rebar3
 ## actually runs and doesn't just throw an error.
 
-REBAR_MK_VERSION=0.1.0
+REBAR_MK_VERSION=0.2.0
 REBAR_LATEST_VERSION=$(shell curl -s https://api.github.com/repos/erlang/rebar3/releases/latest | jq -r ".tag_name")
+REBAR_VERSION?=$(REBAR_LATEST_VERSION)
 #REBAR_VERSION=
 
 REBAR_PATH = $(shell which rebar3)
@@ -53,24 +54,27 @@ ifeq ($(REBAR_PATH),)
 REBAR = ./rebar3
 RANDOM_STRING := rebar3_$(shell openssl rand -hex 16)
 rebar3:
-	make update_rebar3
+	@make update_rebar3
 else
 REBAR = rebar3
 rebar3:
 endif
 
-update_rebar3_mk:
-	curl -O https://raw.githubusercontent.com/choptastic/rebar3.mk/master/rebar3.mk
+rebar3_mk:
+	@curl -O https://raw.githubusercontent.com/choptastic/rebar3.mk/master/rebar3.mk
 
 update_rebar3:
-	@echo "Fetching and compiling rebar3 ($(REBAR_LATEST_VERSION)) for this local project..."
+	@echo "Fetching and compiling rebar3 ($(REBAR_VERSION)) for this local project..."
 	@(cd /tmp && \
-	git clone https://github.com/erlang/rebar3 $(RANDOM_STRING) && \
+	git clone https://github.com/erlang/rebar3 $(RANDOM_STRING) -q && \
 	cd $(RANDOM_STRING) && \
-	git fetch --tags && \
-	git checkout $(REBAR_LATEST_VERSION) && \
+	git fetch --tags -q && \
+	git checkout $(REBAR_VERSION) -q && \
 	./bootstrap)
 	@echo "Installing rebar3 into your project's directory..."
 	@(mv /tmp/$(RANDOM_STRING)/rebar3 .)
 	@echo "Cleaning up..."
 	@(rm -fr /tmp/$(RANDOM_STRING))
+
+install_rebar3: rebar3
+	@(./rebar3 local install)
