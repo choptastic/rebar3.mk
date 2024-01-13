@@ -43,10 +43,19 @@
 ## A more advanced version of this checker would also verify that rebar3
 ## actually runs and doesn't just throw an error.
 
-REBAR_MK_VERSION = 0.2.1
-REBAR_LATEST_VERSION = $(shell curl -s https://api.github.com/repos/erlang/rebar3/releases/latest | grep '"tag_name"' | cut -d '"' -f 4)
+PREFIX="rebar3.mk: "
+REBAR3_MK_VERSION = 0.2.1
+## master here means pull the latest version
+NEW_REBAR3_MK_VERSION ?= master
+REBAR3_MK_REPO = choptastic/rebar3.mk
+REBAR3_MK_RAW_URL = https://raw.githubusercontent.com/$(REBAR3_MK_REPO)/$(NEW_REBAR3_MK_VERSION)/rebar3.mk
+
+REPO ?= erlang/rebar3
+REPO_SVC_NAME ?= Github
+REPO_URL ?= https://github.com/$(REPO).git
+REBAR_LATEST_VERSION ?= $(shell curl -s "https://api.github.com/repos/$(REPO)/releases/latest" | grep '"tag_name"' | cut -d '"' -f 4)
+
 REBAR_VERSION ?= $(REBAR_LATEST_VERSION)
-#REBAR_VERSION=
 
 REBAR_PATH = $(shell which rebar3)
 
@@ -54,26 +63,48 @@ ifeq ($(REBAR_PATH),)
 REBAR = ./rebar3
 RANDOM_STRING := rebar3_$(shell openssl rand -hex 16)
 rebar3:
-	@make update_rebar3
+	@while true; do\
+		echo "$(PREFIX)rebar3 not found! (in either the local directory, or in the PATH)"; \
+		echo "$(PREFIX)Would you like to clone the rebar3 repo and and build it this local project?"; \
+		echo "$(PREFIX) * Latest release: $(REBAR_LATEST_VERSION) (REBAR_LATEST_VERSION)"; \
+		echo "$(PREFIX) * Release to download: $(REBAR_VERSION) (REBAR_VERSION)"; \
+		echo "$(PREFIX) * From $(REPO_SVC_NAME) (REPO_SVC_NAME): $(REPO) (REPO)"; \
+		echo "$(PREFIX)   URL: $(REPO_URL) (REPO_URL)"; \
+		read -r -p " ===> Proceed to clone and build rebar3 based on the above? [Y/N] " yn; \
+		case $$yn in \
+			[Yy]*) \
+				REPO="$(REPO)" REPO_URL="$(REPO_URL)" REBAR_VERSION="$(REBAR_VERSION)" make update_rebar3; \
+				break;; \
+			[Nn]*) \
+				echo "$(PREFIX)Aborting! You will need to install rebar3 locally or allow rebar3.mk"; \
+				echo "$(PREFIX)to build a project-local version. See rebar3.org for more information."; \
+				exit 1;; \
+			*) \
+				echo "$(PREFIX)Please answer Y or N";; \
+		esac; \
+	done; \
+	make update_rebar3
 else
 REBAR = rebar3
 rebar3:
 endif
 
 rebar3_mk:
-	@curl -O https://raw.githubusercontent.com/choptastic/rebar3.mk/master/rebar3.mk
+	@echo "$(PREFIX)Getting rebar3.mk $(NEW_REBAR3_MK_VERSION) (NEW_REBAR3_MK_VERSION) from $(REBAR3_MK_REPO) (REBAR3_MK_REPO)"
+	@echo "$(PREFIX)Downloading URL: $(REBAR3_MK_RAW_URL) (REBAR3_MK_RAW_URL)"
+	@curl -O $(REBAR3_MK_RAW_URL)
 
 update_rebar3:
-	@echo "Fetching and compiling rebar3 ($(REBAR_VERSION)) for this local project..."
+	@echo "$(PREFIX)Fetching and compiling rebar3 ($(REBAR_VERSION)) for this local project..."
 	@(cd /tmp && \
-	git clone https://github.com/erlang/rebar3 $(RANDOM_STRING) -q && \
+	git clone $(REPO_URL) $(RANDOM_STRING) -q && \
 	cd $(RANDOM_STRING) && \
 	git fetch --tags -q && \
 	git checkout $(REBAR_VERSION) -q && \
 	./bootstrap)
-	@echo "Installing rebar3 into your project's directory..."
+	@echo "$(PREFIX)Installing rebar3 into your project's directory..."
 	@(mv /tmp/$(RANDOM_STRING)/rebar3 .)
-	@echo "Cleaning up..."
+	@echo "$(PREFIX)Cleaning up..."
 	@(rm -fr /tmp/$(RANDOM_STRING))
 
 install_rebar3: rebar3
