@@ -47,7 +47,7 @@ Run the following to automatically modify your `Makefile` to add the
 
 ```bash
 curl -s https://rebar3.mk/init.mk | tee >(sha256sum | \
-grep -q '340aa4f18ddf17f82a5912912f71af45b04415268d93f2a551b05424e4f3d89d' && \
+grep -q '9406b0ee0db6589b91d21fc9cf89759e8a7625678bc2874cfba6a67bd287b8fc' && \
 cat >> Makefile)
 ```
 
