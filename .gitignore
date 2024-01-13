@@ -1,2 +1,4 @@
 *~
 *.sw?
+_build
+rebar.lock
