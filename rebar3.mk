@@ -82,8 +82,7 @@ rebar3:
 			*) \
 				echo "$(PREFIX)Please answer Y or N";; \
 		esac; \
-	done; \
-	make update_rebar3
+	done
 else
 REBAR = rebar3
 rebar3:
