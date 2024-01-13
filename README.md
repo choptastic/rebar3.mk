@@ -8,11 +8,11 @@ project.
 
 ### Step 1
 
-There are two possible versions of step 1:
+There are two possible appraoches of step 1:
   * The more secure method, but less automated method
   * The more automated method, but less secure method.
 
-#### The more secure approach
+#### Step 1a - Secure approach
 
 *This approach requires less trust than the more automated approach because
 you're manually downloading `rebar3.mk` and adding it to your repository.*
@@ -31,7 +31,7 @@ Once this is finished, add the following rule to your `Makefile`
 include rebar3.mk
 ```
 
-#### The more automated approach
+#### Step 1b - Automated/trusting approach
 
 *(Pre-note: I recommend looking at the contents of `https://rebar3.mk/init.mk`
 first before running this script. That said, it does not actually run a remote
