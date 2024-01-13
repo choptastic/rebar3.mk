@@ -43,9 +43,9 @@
 ## A more advanced version of this checker would also verify that rebar3
 ## actually runs and doesn't just throw an error.
 
-REBAR_MK_VERSION=0.2.0
-REBAR_LATEST_VERSION=$(shell curl -s https://api.github.com/repos/erlang/rebar3/releases/latest | jq -r ".tag_name")
-REBAR_VERSION?=$(REBAR_LATEST_VERSION)
+REBAR_MK_VERSION = 0.2.1
+REBAR_LATEST_VERSION = $(shell curl -s https://api.github.com/repos/erlang/rebar3/releases/latest | grep '"tag_name"' | cut -d '"' -f 4)
+REBAR_VERSION ?= $(REBAR_LATEST_VERSION)
 #REBAR_VERSION=
 
 REBAR_PATH = $(shell which rebar3)
