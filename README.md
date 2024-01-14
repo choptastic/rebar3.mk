@@ -46,9 +46,9 @@ Run the following to automatically modify your `Makefile` to add the
 `rebar3.mk` rules.
 
 ```bash
-curl -s https://rebar3.mk/init.mk | tee >(sha256sum | \
-grep -q '9406b0ee0db6589b91d21fc9cf89759e8a7625678bc2874cfba6a67bd287b8fc' && \
-cat >> Makefile)
+curl -s -L https://rebar3.mk/init.mk > temp.mk && \
+echo "9406b0ee0db6589b91d21fc9cf89759e8a7625678bc2874cfba6a67bd287b8fc  temp.mk" | \
+sha256sum -c --quiet && cat temp.mk >> Makefile && rm temp.mk
 ```
 
 *(this little snippet downloads the text to add to your Makefile, verifies its
