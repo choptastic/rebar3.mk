@@ -44,7 +44,7 @@
 ## actually runs and doesn't just throw an error.
 
 PREFIX="rebar3.mk: "
-REBAR3_MK_VERSION = 0.2.1
+REBAR3_MK_VERSION = 0.3.0
 ## master here means pull the latest version
 NEW_REBAR3_MK_VERSION ?= master
 REBAR3_MK_REPO = choptastic/rebar3.mk
