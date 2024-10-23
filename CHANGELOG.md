@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+* Updated the default path to use `pwd` instead of `./` for the purposes of
+  using the generated rebar3 in a different directory if needed.
+
 ## 0.3.0
 
 * Added some simpler initialization (modifying the makefile with a script

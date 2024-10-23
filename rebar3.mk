@@ -44,7 +44,7 @@
 ## actually runs and doesn't just throw an error.
 
 PREFIX="rebar3.mk: "
-REBAR3_MK_VERSION = 0.3.0
+REBAR3_MK_VERSION = 0.3.1
 ## master here means pull the latest version
 NEW_REBAR3_MK_VERSION ?= master
 REBAR3_MK_REPO = choptastic/rebar3.mk
@@ -60,7 +60,7 @@ REBAR_VERSION ?= $(REBAR_LATEST_VERSION)
 REBAR_PATH = $(shell which rebar3)
 
 ifeq ($(REBAR_PATH),)
-REBAR = ./rebar3
+REBAR = $(shell pwd)/rebar3
 RANDOM_STRING := rebar3_$(shell openssl rand -hex 16)
 rebar3:
 	@while true; do\
