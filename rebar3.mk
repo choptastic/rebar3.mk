@@ -1,5 +1,5 @@
 ## rebar3.mk
-## Version 0.1.2
+## Version 0.3.2
 ## Copyright 2023-2025 Jesse Gumm
 ## MIT License
 ##
@@ -44,7 +44,7 @@
 ## actually runs and doesn't just throw an error.
 
 MSG_PREFIX="rebar3.mk: "
-REBAR3_MK_VERSION = 0.3.1
+REBAR3_MK_VERSION = 0.3.2
 ## master here means pull the latest version
 NEW_REBAR3_MK_VERSION ?= master
 REBAR3_MK_REPO = choptastic/rebar3.mk
