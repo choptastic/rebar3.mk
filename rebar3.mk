@@ -1,6 +1,6 @@
 ## rebar3.mk
-## Version 0.1.1
-## Copyright 2023 Jesse Gumm
+## Version 0.1.2
+## Copyright 2023-2025 Jesse Gumm
 ## MIT License
 ##
 ## This is a tool to help you either use the existing rebar3 in the system or
@@ -43,7 +43,7 @@
 ## A more advanced version of this checker would also verify that rebar3
 ## actually runs and doesn't just throw an error.
 
-PREFIX="rebar3.mk: "
+MSG_PREFIX="rebar3.mk: "
 REBAR3_MK_VERSION = 0.3.1
 ## master here means pull the latest version
 NEW_REBAR3_MK_VERSION ?= master
@@ -64,23 +64,23 @@ REBAR = $(shell pwd)/rebar3
 RANDOM_STRING := rebar3_$(shell openssl rand -hex 16)
 rebar3:
 	@while true; do\
-		echo "$(PREFIX)rebar3 not found! (in either the local directory, or in the PATH)"; \
-		echo "$(PREFIX)Would you like to clone the rebar3 repo and and build it this local project?"; \
-		echo "$(PREFIX) * Latest release: $(REBAR_LATEST_VERSION) (REBAR_LATEST_VERSION)"; \
-		echo "$(PREFIX) * Release to download: $(REBAR_VERSION) (REBAR_VERSION)"; \
-		echo "$(PREFIX) * From $(REPO_SVC_NAME) (REPO_SVC_NAME): $(REPO) (REPO)"; \
-		echo "$(PREFIX)   URL: $(REPO_URL) (REPO_URL)"; \
+		echo "$(MSG_PREFIX)rebar3 not found! (in either the local directory, or in the PATH)"; \
+		echo "$(MSG_PREFIX)Would you like to clone the rebar3 repo and and build it this local project?"; \
+		echo "$(MSG_PREFIX) * Latest release: $(REBAR_LATEST_VERSION) (REBAR_LATEST_VERSION)"; \
+		echo "$(MSG_PREFIX) * Release to download: $(REBAR_VERSION) (REBAR_VERSION)"; \
+		echo "$(MSG_PREFIX) * From $(REPO_SVC_NAME) (REPO_SVC_NAME): $(REPO) (REPO)"; \
+		echo "$(MSG_PREFIX)   URL: $(REPO_URL) (REPO_URL)"; \
 		read -r -p " ===> Proceed to clone and build rebar3 based on the above? [Y/N] " yn; \
 		case $$yn in \
 			[Yy]*) \
 				REPO="$(REPO)" REPO_URL="$(REPO_URL)" REBAR_VERSION="$(REBAR_VERSION)" make update_rebar3; \
 				break;; \
 			[Nn]*) \
-				echo "$(PREFIX)Aborting! You will need to install rebar3 locally or allow rebar3.mk"; \
-				echo "$(PREFIX)to build a project-local version. See rebar3.org for more information."; \
+				echo "$(MSG_PREFIX)Aborting! You will need to install rebar3 locally or allow rebar3.mk"; \
+				echo "$(MSG_PREFIX)to build a project-local version. See rebar3.org for more information."; \
 				exit 1;; \
 			*) \
-				echo "$(PREFIX)Please answer Y or N";; \
+				echo "$(MSG_PREFIX)Please answer Y or N";; \
 		esac; \
 	done
 else
@@ -89,21 +89,21 @@ rebar3:
 endif
 
 rebar3_mk:
-	@echo "$(PREFIX)Getting rebar3.mk $(NEW_REBAR3_MK_VERSION) (NEW_REBAR3_MK_VERSION) from $(REBAR3_MK_REPO) (REBAR3_MK_REPO)"
-	@echo "$(PREFIX)Downloading URL: $(REBAR3_MK_RAW_URL) (REBAR3_MK_RAW_URL)"
+	@echo "$(MSG_PREFIX)Getting rebar3.mk $(NEW_REBAR3_MK_VERSION) (NEW_REBAR3_MK_VERSION) from $(REBAR3_MK_REPO) (REBAR3_MK_REPO)"
+	@echo "$(MSG_PREFIX)Downloading URL: $(REBAR3_MK_RAW_URL) (REBAR3_MK_RAW_URL)"
 	@curl -O $(REBAR3_MK_RAW_URL)
 
 update_rebar3:
-	@echo "$(PREFIX)Fetching and compiling rebar3 ($(REBAR_VERSION)) for this local project..."
+	@echo "$(MSG_PREFIX)Fetching and compiling rebar3 ($(REBAR_VERSION)) for this local project..."
 	@(cd /tmp && \
 	git clone $(REPO_URL) $(RANDOM_STRING) -q && \
 	cd $(RANDOM_STRING) && \
 	git fetch --tags -q && \
 	git checkout $(REBAR_VERSION) -q && \
 	./bootstrap)
-	@echo "$(PREFIX)Installing rebar3 into your project's directory..."
+	@echo "$(MSG_PREFIX)Installing rebar3 into your project's directory..."
 	@(mv /tmp/$(RANDOM_STRING)/rebar3 .)
-	@echo "$(PREFIX)Cleaning up..."
+	@echo "$(MSG_PREFIX)Cleaning up..."
 	@(rm -fr /tmp/$(RANDOM_STRING))
 
 install_rebar3: rebar3
