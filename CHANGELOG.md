@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+* Fix ambiguity issue with PREFIX variables
+* Fix some version discrepancies between tags, variables, and comments
+
 ## 0.3.1
 
 * Updated the default path to use `pwd` instead of `./` for the purposes of
